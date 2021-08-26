@@ -1,21 +1,23 @@
-# app/__init__.py
-
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 db = SQLAlchemy()
+# migrate = Migrate()
 
-def create_app(config_type): #dev, test, or prod
 
+def create_app(config_type):
     app = Flask(__name__)
     configuration = os.path.join(os.getcwd(), 'config', config_type + '.py')
-    #C:\Users\C-TSJN897\Desktop\Learn to build scalable Python Web Applications with Flask, PostgreSQL, SQLAlchemy, git, and Heroku with Awesome Project\config
     app.config.from_pyfile(configuration)
+    db.init_app(app)
+    # migrate.init_app(app, db)
 
-    db.init_app(app) #bind database to flask app
-
-    from app.catalog import main # import blueprint
-    app.register_blueprint(main) # register blueprint
+    from app.catalog import main
+    app.register_blueprint(main)
 
     return app
+
+
+
